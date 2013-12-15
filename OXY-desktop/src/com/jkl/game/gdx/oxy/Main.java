@@ -15,8 +15,7 @@ public class Main {
 		cfg.width = 1024;
 		cfg.height = 768;
 		
-		new LwjglApplication(new Oxy(), cfg);
-		
 		Oxy.setPlatformresolver(new DesktopResolver());
+		new LwjglApplication(new Oxy(), cfg);
 	}
 }

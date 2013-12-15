@@ -11,9 +11,17 @@ import com.jkl.game.gdx.oxy.screens.OxyLevel;
 import com.jkl.game.gdx.oxy.screens.Splash;
 import com.jkl.game.gdx.oxy.test.Menue;
 
+
 //public class Oxy implements ApplicationListener {
 public class Oxy extends Game {
-
+	
+	public class GameStatus {
+		public int Gamelevel=1;
+		
+	}
+	
+	public static GameStatus gamestatus = new Oxy().new GameStatus();
+	
 	public static Logger log =  new Logger("OXY",Logger.DEBUG);
 	public static FPSLogger fpslog ;
 	public static TweenManager manager;
@@ -34,40 +42,35 @@ public class Oxy extends Game {
 //		Gdx.app.setLogLevel(Application.LOG_INFO);
 		fpslog = new FPSLogger();
 		
+//		GameStatus g = new GameStatus();
+		
 		manager = new TweenManager();
+		
 		//For android		Tween.se.setPoolEnabled(true);
+		if (platformresolver != null) {
+			platformresolver.create();
+		}
 		
 		setScreen(new Splash());
 //		setScreen(new OxyLevel());
 //		setScreen(new Menue(this));
 		}
 
-/*
-	private void logmap(TiledMap map2) {
-		System.out.println("map layers:"+map.getLayers().getCount());
-		TiledMapTileLayer tl = (TiledMapTileLayer) map.getLayers().get(0);
-		System.out.println("layer_name:"+tl.getName());
-//		int tileid = tl.getCell(19,30).getTile().getId();
-		for (int px=0;px<49;px++) {
-			for (int py=0;py<49;py++) {
-				Cell cell = tl.getCell(px,py);
-				if (cell != null) {
-					System.out.println(px+"-"+py+" TileID "+cell.getTile().getId());
-				}
-			}
-//			log.info(String.valueOf(tileid.getTile().getId()));
-		}
-	}
-*/
 	
 	@Override
 	public void dispose() {
 		super.dispose();
+		if (platformresolver != null) {
+			platformresolver.dispose();
+		}
 	}
 
 	@Override
 	public void render() {	
 		super.render();
+		if (platformresolver != null) {
+			platformresolver.render();
+		}
 	}
 
 	@Override

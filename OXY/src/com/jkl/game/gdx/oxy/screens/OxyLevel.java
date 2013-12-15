@@ -48,7 +48,6 @@ public class OxyLevel implements Screen {
 	public Body player;
 	private Vector2 move = new Vector2();
 	
-	private int gamelevel=1;
 	private boolean LevelSolved,LevelPause;
 	
 	public static int ColorNumbers =2;
@@ -60,7 +59,7 @@ public class OxyLevel implements Screen {
 	
 	private String getlevelfile() {
 //		return String.format("map/OXY%03d.tmx",gamelevel); 
-		return "map/OXY00"+String.valueOf(gamelevel)+".tmx"; 
+		return "map/OXY00"+String.valueOf(Oxy.gamestatus.Gamelevel)+".tmx"; 
 	}
 
 	private void renderTarget(int x, int y,Color c) {
@@ -180,7 +179,6 @@ public class OxyLevel implements Screen {
 			Oxy.getPlatformresolver().update();
 			move.x = Oxy.getPlatformresolver().getGx();
 			move.y = Oxy.getPlatformresolver().getGy();
-//			platformresolver.render();
 		}
 		
 		renderStatus();
@@ -193,7 +191,7 @@ public class OxyLevel implements Screen {
 		if ((!LevelSolved) && (isSolved())) {
 			setLastError("LEVEL SOLVED");
 			LevelSolved= true;
-			gamelevel++;
+			Oxy.gamestatus.Gamelevel++;
 			Oxy.log.info("Level Solved: next is " +getlevelfile());
 			loadLevel();
 		} 
@@ -214,7 +212,7 @@ public class OxyLevel implements Screen {
 		} else {
 			setLastError("File FAULTEY");
 			Oxy.log.error("FILE FAULTY");
-			gamelevel =1;
+			Oxy.gamestatus.Gamelevel =1;
 		}
 		map = new TmxMapLoader().load(getlevelfile());
 		maprender = new OrthogonalTiledMapRenderer(map,1/32f,batch); 
@@ -231,10 +229,10 @@ public class OxyLevel implements Screen {
 //		setLastError("Level No. "+gamelevel);
 //		LevelPause = true;
 	}
-	
-	
+		
 	@Override
 	public void show() {
+		
 		Gdx.gl.glEnable(GL10.GL_BLEND);
 		camera = new OrthographicCamera(30,25);	
 		camera.position.set(26,25,0);
