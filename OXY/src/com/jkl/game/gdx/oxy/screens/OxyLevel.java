@@ -48,7 +48,7 @@ public class OxyLevel implements Screen {
 	public Body player;
 	private Vector2 move = new Vector2();
 	
-	private int gamelevel=2;
+	private int gamelevel=1;
 	private boolean LevelSolved,LevelPause;
 	
 	public static int ColorNumbers =2;

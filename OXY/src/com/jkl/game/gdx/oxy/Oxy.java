@@ -37,9 +37,9 @@ public class Oxy extends Game {
 		manager = new TweenManager();
 		//For android		Tween.se.setPoolEnabled(true);
 		
-//		setScreen(new Splash());
+		setScreen(new Splash());
 //		setScreen(new OxyLevel());
-		setScreen(new Menue(this));
+//		setScreen(new Menue(this));
 		}
 
 /*
