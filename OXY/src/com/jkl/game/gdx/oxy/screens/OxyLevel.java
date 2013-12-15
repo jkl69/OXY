@@ -279,10 +279,14 @@ public class OxyLevel implements Screen {
 
 	@Override
 	public void dispose() {
-		map.dispose();
-		maprender.dispose();
-		debugRenderer.dispose();
-		world.dispose();
+		if (map != null) {
+			map.dispose();
+			maprender.dispose();
+		}
+		if (world != null) {
+			world.dispose();
+			debugRenderer.dispose();
+		}
 		texture.dispose();
 		font.dispose();
 		batch.dispose();

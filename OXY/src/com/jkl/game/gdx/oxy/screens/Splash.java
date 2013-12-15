@@ -49,7 +49,8 @@ public class Splash implements Screen {
 		Tween.to(splash , SplashActor.ALPHA, 3).target(1).setCallback(new TweenCallback(){
 			@Override
 			public void onEvent(int type, BaseTween<?> source) {
-				((Game) Gdx.app.getApplicationListener()).setScreen(new OxyLevel());
+				Oxy.gamestatus.showmenu = true;
+//				((Game) Gdx.app.getApplicationListener()).setScreen(new OxyLevel());
 			}
 		}).start(Oxy.manager);
 	}
