@@ -46,10 +46,12 @@ public class Splash implements Screen {
 		
 		Tween.set(splash, SplashActor.ALPHA).target(0).start(Oxy.manager);
 //		Tween.to(splash , SplashActor.ALPHA, 3).target(1).start(Oxy.manager);
-		Tween.to(splash , SplashActor.ALPHA, 3).target(1).setCallback(new TweenCallback(){
+		Tween.to(splash , SplashActor.ALPHA, 1).target(1).repeatYoyo(1, 2).setCallback(new TweenCallback(){
 			@Override
 			public void onEvent(int type, BaseTween<?> source) {
-				Oxy.gamestatus.showmenu = true;
+				Oxy.gamestatus.Gamelevel++;
+				Oxy.gamestatus.message ="LEVEL "+Oxy.gamestatus.Gamelevel;
+				Oxy.gamestatus.setShowmenu(true);
 //				((Game) Gdx.app.getApplicationListener()).setScreen(new OxyLevel());
 			}
 		}).start(Oxy.manager);

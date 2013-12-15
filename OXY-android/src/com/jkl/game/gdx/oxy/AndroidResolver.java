@@ -12,6 +12,12 @@ public class AndroidResolver implements PlatformResolver {
 	private float x,y;
 	
 	@Override
+	public void create() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
 	public float getGx() {
 		// TODO Auto-generated method stub
 		return x;
@@ -25,7 +31,9 @@ public class AndroidResolver implements PlatformResolver {
 
 	@Override
 	public void render() {
-		font = new BitmapFont();
+		return;
+/*
+	    font = new BitmapFont();
 		batch= new SpriteBatch();
 //		sr= new SpriteBatch();
 		batch.begin();
@@ -37,6 +45,7 @@ public class AndroidResolver implements PlatformResolver {
 		
 		batch.dispose();
 		font.dispose();
+		*/
 	}
 
 	@Override
@@ -47,6 +56,13 @@ public class AndroidResolver implements PlatformResolver {
 //			x = Gdx.input.getAccelerometerY() * 2f;
 //			y = Gdx.input.getAccelerometerX() * -2f;		
 		}
+	}
+
+
+	@Override
+	public void dispose() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

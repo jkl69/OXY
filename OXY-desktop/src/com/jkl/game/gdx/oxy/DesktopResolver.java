@@ -17,7 +17,7 @@ public class DesktopResolver implements PlatformResolver {
 	private float x,y;
 	private float originX,originY;
 	private Rectangle shape;
-	float shape_faktor = 50;
+	float shape_faktor = 25;
 //	DesktopResolver(){		}
 	
 	@Override
@@ -100,7 +100,7 @@ public class DesktopResolver implements PlatformResolver {
 		
 		render.begin(ShapeType.Line);
 //		render.setColor(Color.DARK_GRAY);
-		render.setColor(1,0,0,.15f);
+		render.setColor(1,0,0,.2f);
 /*		
 		render.line(x1,y1,x2,y2);
 		render.line(x2,y2,x3,y3);

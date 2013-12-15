@@ -5,7 +5,9 @@ import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.FPSLogger;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Logger;
 import com.jkl.game.gdx.oxy.screens.OxyLevel;
 import com.jkl.game.gdx.oxy.screens.Splash;
@@ -23,7 +25,7 @@ public class Oxy extends Game {
 	public static TweenManager manager;
 	private OxyLevel oxylevel;
 	
-	MenuStage m ;
+	static MenuStage menu ;
 	
 	static PlatformResolver platformresolver;
 	public static PlatformResolver getPlatformresolver() {
@@ -40,8 +42,8 @@ public class Oxy extends Game {
 //		Gdx.app.setLogLevel(Application.LOG_INFO);
 		fpslog = new FPSLogger();
 		
-		m =new MenuStage(this);
-		Gdx.input.setInputProcessor(m);
+		menu =new MenuStage(this);
+		Gdx.input.setInputProcessor(menu);
 		
 		manager = new TweenManager();
 		//For android		Tween.se.setPoolEnabled(true);
@@ -57,6 +59,7 @@ public class Oxy extends Game {
 	@Override
 	public void resize(int width, int height) {
 		super.resize(width, height);
+		
 	}
 	
 	@Override
@@ -65,30 +68,55 @@ public class Oxy extends Game {
 		if ((gamestatus.showplatform) && (platformresolver != null)) {
 			platformresolver.render();
 		}
-		if (gamestatus.showmenu) {
-			m.act();
-			m.draw();
+		if (gamestatus.isShowmenu()) {
+			menu.act();
+//			Table.drawDebug(menu);
+			menu.draw();
 		}
 	}
 
 	public void doEvent() {
 		if (gamestatus.Gamelevel == 0) {
+			gamestatus.showplatform =false;
 			setScreen(new Splash());
 		} 
 		if (gamestatus.Gamelevel > 0) {
+			log.debug("doEvent");
+			
 			if (getScreen() != null)
 				if (getScreen().getClass() == Splash.class) {
 				getScreen().dispose();
+				log.debug("doEvent destroy splashScreen create levelSceen");
+				setScreen(oxylevel);
+			} 
+			if (getScreen() == null) {
+				log.debug("doEvent create levelSceen");
+				setScreen(oxylevel);
 			}
-			gamestatus.showplatform = true;
-			gamestatus.showmenu = false;
-			setScreen(oxylevel);
+			if (gamestatus.pause) {
+				gamestatus.pause =false;
+				gamestatus.setShowmenu(false);
+				gamestatus.showplatform = gamestatus.platformrender;
+				return;
+			}
+			if (oxylevel.loadLevel()) {
+				gamestatus.setShowmenu(false);
+				gamestatus.showplatform = gamestatus.platformrender;
+			} else {
+				menu.tButton.setColor(Color.BLUE);
+				menu.tButton.setDisabled(true);
+			}
+//			setScreen(oxylevel);
 		}
 	}
 	
 	@Override
 	public void pause() {
+		log.debug("Pause");
 		super.pause();
+		gamestatus.pause =true;
+		Oxy.gamestatus.message = "OXY Pause";
+		Oxy.gamestatus.setShowmenu(true);
 	}
 
 	@Override
@@ -98,11 +126,12 @@ public class Oxy extends Game {
 	
 	@Override
 	public void dispose() {
+		log.debug("Dispose");
 		super.dispose();
 		if (platformresolver != null) {
 			platformresolver.dispose();
 		}
-		m.dispose();
+		menu.dispose();
 		oxylevel.dispose();
 	}
 }

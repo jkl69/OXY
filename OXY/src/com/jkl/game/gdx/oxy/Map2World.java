@@ -23,10 +23,12 @@ import com.jkl.game.gdx.oxy.screens.OxyLevel;
 public class Map2World {
 	
 	final Color[] targetcolors = {Color.BLUE,Color.CYAN,Color.GREEN,Color.MAGENTA,Color.ORANGE,Color.RED,Color.PINK,Color.YELLOW};
-	int[]   usedcolor = {0,0,0,0,0,0,0,0};
+
+	int[]   usedcolor = new int[8];
 	Color[] colortable =new Color[8];
 	
-	private Logger log = new Logger("Map2World",Logger.DEBUG);
+//	private Logger log = new Logger("Map2World",Logger.DEBUG);
+	private Logger log = new Logger("Map2World",Logger.INFO);
 //	private Map map;
 	private MapObjects mapobjects;
 	
@@ -41,17 +43,23 @@ public class Map2World {
 	private static int wallcounter;
 	private Random  ramdom;
 	
-	public Map2World(World w) {
-		this.world = w;
+	public Map2World() {
+//		this.world = w;
 		ramdom = new Random();
-		targets = new MapObjects();
+//		targets = new MapObjects();
 //		createWorld(m);
+	}
+
+	
+	private void clearData() {
+		for (int i =0;i<=7;i++) {
+			usedcolor[i] =0;
+			colortable[i] =null;
+		}	
 	}
 	
 	private void setusedColors() {
-		for (int i :usedcolor) {
-			usedcolor[i] =0;
-		}
+		clearData();
 		int rand;
 		boolean used;
 		int colorindex=0;
@@ -78,6 +86,7 @@ public class Map2World {
 		log.info("usedColors: "+txt);		
 	}
 	
+	
 	private boolean isColorused(Color c1) {
 		for (Color c : colortable) {
 //			log.info("check color used");
@@ -86,7 +95,10 @@ public class Map2World {
 		return false;
 	}
 
-	public boolean createWorld(Map map) {
+	public boolean createWorld(Map map,World w) {
+		
+		this.world = w;
+		targets = new MapObjects();
 		
 		if (map.getLayers().getCount() < 2) {
 			log.error("Object Layer missing Layers:"+String.valueOf(map.getLayers().getCount()));
@@ -101,6 +113,7 @@ public class Map2World {
 		}
 		OxyLevel.ColorNumbers = Integer.parseInt(colors);
 		OxyLevel.Groupsize = Integer.parseInt(size);
+		
 		setusedColors();
 		
 		MapLayer layer = map.getLayers().get(1);	

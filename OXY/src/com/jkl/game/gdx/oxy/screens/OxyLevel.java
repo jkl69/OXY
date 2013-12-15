@@ -21,6 +21,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Logger;
 import com.jkl.game.gdx.oxy.Map2World;
 import com.jkl.game.gdx.oxy.Oxy;
 import com.jkl.game.gdx.oxy.OxyContactListener;
@@ -28,15 +29,14 @@ import com.jkl.game.gdx.oxy.OxyTarget;
 
 public class OxyLevel implements Screen {
 
+	public static Logger log =  new Logger("OxyLevel",Logger.DEBUG);
 	private OrthographicCamera camera;
-
 	private SpriteBatch batch, fontbatch;
-
 	private Texture texture;
 	private Sprite sprite;
 	private ShapeRenderer shape;
 	private BitmapFont font;
-	
+	private float LevelTime = 50000f;
 	private TiledMap map;
 //	public MapObjects targets;
 	
@@ -48,18 +48,16 @@ public class OxyLevel implements Screen {
 	public Body player;
 	private Vector2 move = new Vector2();
 	
-	private boolean LevelSolved,LevelPause;
+	private boolean LevelSolved;
 	
 	public static int ColorNumbers =2;
 	public static int Groupsize=2;
 	
 	public static int opentargets=0;
 	
-	private String lastError =null;
-	
 	private String getlevelfile() {
-//		return String.format("map/OXY%03d.tmx",gamelevel); 
-		return "map/OXY00"+String.valueOf(Oxy.gamestatus.Gamelevel)+".tmx"; 
+		return String.format("map/OjXY%03d.tmx",Oxy.gamestatus.Gamelevel); 
+//		return "map/OXY00"+String.valueOf(Oxy.gamestatus.Gamelevel)+".tmx"; 
 	}
 
 	private void renderTarget(int x, int y,Color c) {
@@ -71,7 +69,7 @@ public class OxyLevel implements Screen {
 	
 	private void renderTargets() {
 		if (opentargets == Groupsize){
-			Oxy.log.info("all Targegts open");
+			log.info("all Targegts open");
 			for (MapObject o: map2world.targets) {
 				OxyTarget t = (OxyTarget) o;
 				if (t.show) {
@@ -103,25 +101,27 @@ public class OxyLevel implements Screen {
 	}
 	
 	private void updateCamera() {
+		float p = 0.80f;
 		float diff = 0 ;
-		if (player.getPosition().y > camera.position.y+11) {
-		   diff = (camera.position.y+11 - player.getPosition().y) ;
-			Oxy.log.info("up:"+String.valueOf(player.getPosition().y)+":"+String.valueOf(camera.position.y)+":"+String.valueOf(diff));
+//		if (player.getPosition().y > camera.position.y+11) {
+		if (player.getPosition().y > camera.position.y + (camera.viewportHeight /2 *p)) {
+		   diff = (camera.position.y+(camera.viewportHeight /2 *p) - player.getPosition().y) ;
+			log.info("up:"+String.valueOf(player.getPosition().y)+":"+String.valueOf(camera.position.y)+":"+String.valueOf(diff));
 			camera.position.add(0,-diff,0);
 		}
-		if (player.getPosition().y < camera.position.y-11) {
-			   diff = camera.position.y-11 - player.getPosition().y;
-				Oxy.log.info("down:"+String.valueOf(player.getPosition().y)+":"+String.valueOf(camera.position.y)+":"+String.valueOf(diff));
+		if (player.getPosition().y < camera.position.y-(camera.viewportHeight /2 *p)) {
+			   diff = camera.position.y-(camera.viewportHeight /2 *p) - player.getPosition().y;
+				log.info("down:"+String.valueOf(player.getPosition().y)+":"+String.valueOf(camera.position.y)+":"+String.valueOf(diff));
 				camera.position.add(0,-diff,0);
 		}
-		if (player.getPosition().x > camera.position.x +13.5f) {
-			   diff = camera.position.x+13.5f - player.getPosition().x;
-				Oxy.log.info("right:"+String.valueOf(player.getPosition().x)+":"+String.valueOf(camera.position.x)+":"+String.valueOf(diff));
+		if (player.getPosition().x > camera.position.x +(camera.viewportWidth /2 *p)) {
+			   diff = camera.position.x+(camera.viewportWidth /2 *p) - player.getPosition().x;
+				log.info("right:"+String.valueOf(player.getPosition().x)+":"+String.valueOf(camera.position.x)+":"+String.valueOf(diff));
 				camera.position.add(-diff,0,0);
 		}
-		if (player.getPosition().x < camera.position.x -13.5f) {
-			   diff = camera.position.x-13.5f - player.getPosition().x;
-				Oxy.log.info("left:"+String.valueOf(player.getPosition().x)+":"+String.valueOf(camera.position.x)+":"+String.valueOf(diff));
+		if (player.getPosition().x < camera.position.x -(camera.viewportWidth /2 *p)) {
+			   diff = camera.position.x-(camera.viewportWidth /2 *p) - player.getPosition().x;
+				log.info("left:"+String.valueOf(player.getPosition().x)+":"+String.valueOf(camera.position.x)+":"+String.valueOf(diff));
 				camera.position.add(-diff,0,0);
 		}
 		
@@ -132,18 +132,7 @@ public class OxyLevel implements Screen {
 			maprender.setView(camera);
 		}
 	}
-	
-	private void setLastError(String s) {
-		this.lastError  =s;
-		if (s ==null) {
-			font.setColor(1,1,1,1);
-			font.scale(0.5f);
-		} else{
-			font.setColor(1,0,0,1);
-			font.scale(2.0f);
-		}
-	}
-	
+
 	private void renderPlayer() {
 		if (player!= null) {
 			player.applyForceToCenter(move, true);
@@ -156,23 +145,20 @@ public class OxyLevel implements Screen {
 			updateCamera();
 		}
 	}
-	
+
 	private void renderStatus() {
-		fontbatch.begin();
-		if (lastError != null) {
-			font.draw(fontbatch, lastError,Gdx.graphics.getWidth() /2-100, Gdx.graphics.getHeight() /2 );
-		} else		font.draw(fontbatch, "FPS: "+Gdx.graphics.getFramesPerSecond(), 20, 25);
-		fontbatch.end();	
+		
 	}
 	
 	@Override
 	public void render(float delta) {
-//		Oxy.log.debug("render()");
+//		log.debug("render()");
 //		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		if (Oxy.gamestatus.isShowmenu())  return;
 
-		maprender.render();
+		if (map != null) maprender.render();
 //		debugRenderer.render(world, camera.combined);
 			
 		if (Oxy.getPlatformresolver() != null) {
@@ -182,103 +168,144 @@ public class OxyLevel implements Screen {
 		}
 		
 		renderStatus();
-		if (LevelPause)  return;
+		Gdx.gl.glEnable(GL10.GL_BLEND);
 		renderPlayer();
 		renderTargets();
 		
 		Oxy.fpslog.log();
 		
 		if ((!LevelSolved) && (isSolved())) {
-			setLastError("LEVEL SOLVED");
+//			setLastError("LEVEL SOLVED");
 			LevelSolved= true;
 			Oxy.gamestatus.Gamelevel++;
-			Oxy.log.info("Level Solved: next is " +getlevelfile());
-			loadLevel();
+			Oxy.gamestatus.message ="LEVEL "+(Oxy.gamestatus.Gamelevel-1)+"is solved\nNEXT LEVEL "+Oxy.gamestatus.Gamelevel;
+			Oxy.gamestatus.setShowmenu(true);
+			log.info("Level Solved: next is " +getlevelfile());
+//			loadLevel();
 		} 
 		
+		LevelTime -= delta;
 		world.step(delta, 6, 2);
 
 	}
 
 	@Override
 	public void resize(int width, int height) {
+		float aratio = (float)height / (float)width;
+		log.debug("resize "+width+":"+height+" aspectRatio:"+aratio);
+		Oxy.gamestatus.cameraHeight = Oxy.gamestatus.cameraWidth * aratio;
 		
+		camera.viewportWidth  =Oxy.gamestatus.cameraWidth;
+		camera.viewportHeight  =Oxy.gamestatus.cameraHeight;
+//		camera = new OrthographicCamera(Oxy.gamestatus.cameraWidth , Oxy.gamestatus.cameraHeight);	
+		camera.update();
+		log.info("Set Camera.Width "+String.valueOf(camera.viewportWidth)+" Heigth "+String.valueOf(camera.viewportHeight));
+		shape.setProjectionMatrix(camera.combined);
+		batch.setProjectionMatrix(camera.combined);
 	}
-
-	private void loadLevel() {
+	
+	private void clearLevel() {
+		log.debug("ClearLevel");
+		if (map != null) {
+			map.dispose();
+			maprender.dispose();
+		}
+		if (world != null) {
+			world.dispose();
+		}
+		LevelSolved = false;
+	}
+	
+	public boolean loadLevel() {
+		log.debug("loadLevel");	
+		
 		FileHandle file = Gdx.files.internal(getlevelfile());
 		if(file.exists()){
-			Oxy.log.error("FILE OK");
+			log.error("FILE OK");
 		} else {
-			setLastError("File FAULTEY");
-			Oxy.log.error("FILE FAULTY");
-			Oxy.gamestatus.Gamelevel =1;
+			Oxy.gamestatus.message = "Level NOT found";
+			log.error("Level NOT found");
+			Oxy.gamestatus.setShowmenu(true);
+			return false;
 		}
+		clearLevel();
+		
 		map = new TmxMapLoader().load(getlevelfile());
 		maprender = new OrthogonalTiledMapRenderer(map,1/32f,batch); 
 		maprender.setView(camera);
-
-		if (! map2world.createWorld(map)) {
-			setLastError("LEVEL ERROR");
-			Oxy.log.error("LEVEL ERROR");
-			LevelPause = true;
-			return;
+		
+		world = new World(new Vector2(0, 0), true);
+		world.setContactListener( new OxyContactListener());
+		
+		if (! map2world.createWorld(map, world)) {
+			Oxy.gamestatus.message = "LEVEL ERROR";
+			log.error("LEVEL ERROR");
+			Oxy.gamestatus.setShowmenu(true);
+			return false;
 		};
 		this.player = map2world.player;
-
-//		setLastError("Level No. "+gamelevel);
-//		LevelPause = true;
+		
+		log.info("set Camera to PlayerPos: "+player.getPosition().x+":"+(49 - player.getPosition().y));
+//		camera.position.set((player.getPosition().x / 32) +camera.viewportWidth , 49-player.getPosition().y ,0);
+		camera.position.set(25,24,0);
+		updateCamera();
+		camera.update();
+		batch.setProjectionMatrix(camera.combined);
+		shape.setProjectionMatrix(camera.combined);
+		maprender.setView(camera);
+//		camera.position.set(0,0,0);
+		return true;
 	}
 		
 	@Override
 	public void show() {
+//		camera = new OrthographicCamera(30,25);	
 		
-		Gdx.gl.glEnable(GL10.GL_BLEND);
-		camera = new OrthographicCamera(30,25);	
-		camera.position.set(26,25,0);
-		camera.update();
-		
+//		camera.position.set(26,25,0);
 		shape = new ShapeRenderer();
-		shape.setProjectionMatrix(camera.combined);
 
 		fontbatch = new SpriteBatch();
 		font =new BitmapFont();
 		
 		batch = new SpriteBatch();
-		batch.setProjectionMatrix(camera.combined);
+
+		camera = new OrthographicCamera();	
 		
-		world = new World(new Vector2(0, 0), true);
-		world.setContactListener( new OxyContactListener());
-		map2world = new Map2World(world);
+		map2world = new Map2World();
 
 		debugRenderer = new Box2DDebugRenderer();
-
-//		OxyContactListener oxycontactlistener = new OxyContactListener();
 
 		texture = new Texture(Gdx.files.internal("data/player.png"));
 //		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		sprite = new Sprite(texture);
 		sprite.setOrigin(.5f,.5f);
     	sprite.setSize(1,1);
-    	
-    	loadLevel();
+
 	}
+	
 
 	@Override
 	public void hide() {
-
+		log.debug("Hide");
+//		dispose();
 	}
 
 	@Override
 	public void pause() {
+		log.debug("Pause");
+		Oxy.gamestatus.message = "Level Pause";
+		Oxy.gamestatus.setShowmenu(true);
 	}
+	
 
 	@Override
 	public void resume() {
+		Oxy.log.debug("Level.resume");
 	}
 
 	@Override
 	public void dispose() {
+		log.debug("Dispose");
 		if (map != null) {
 			map.dispose();
 			maprender.dispose();
@@ -287,10 +314,12 @@ public class OxyLevel implements Screen {
 			world.dispose();
 			debugRenderer.dispose();
 		}
-		texture.dispose();
-		font.dispose();
-		batch.dispose();
-		fontbatch.dispose();
+		if (texture != null) {
+			texture.dispose();
+			font.dispose();
+			batch.dispose();
+			fontbatch.dispose();
+		}
 	}
 
 }
