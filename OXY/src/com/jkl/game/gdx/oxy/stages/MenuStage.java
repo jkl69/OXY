@@ -1,26 +1,22 @@
 package com.jkl.game.gdx.oxy.stages;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.jkl.game.gdx.oxy.Oxy;
-import com.jkl.game.gdx.oxy.screens.OxyLevel;
 
 public class MenuStage extends Stage {
     
-	private BitmapFont whiteFont;
+	private BitmapFont whiteFont,bmpfont;
 	private TextureAtlas atlas;
 	private Skin skin;
 	public TextButton tButton;
@@ -30,45 +26,40 @@ public class MenuStage extends Stage {
 	private Table table;
 	
     public MenuStage (Oxy g) {
-    	
     	this.game =  g;
     	
     	atlas = new TextureAtlas("UI/oxy.pack");
-    	skin = new Skin(atlas);
-    	table = new Table(skin);
+     	skin = new Skin(Gdx.files.internal("UI/oxy.json"),atlas);
+     	
+     	table = new Table(skin);
     	table.debug();
     	table.setBounds(0, 0, getWidth(),  getHeight());
     	
-    	whiteFont = new BitmapFont(Gdx.files.internal("font/white.fnt"),false);
+    	bmpfont = new BitmapFont(Gdx.files.internal("font/font1.fnt"),false);
     	
-    	whiteFont.setScale(0.8f);
-    	whiteFont.setColor(Color.RED);
+//    	whiteFont.setScale(0.8f);
+    	bmpfont.setScale(2f);
+    	bmpfont.setColor(Color.GREEN);
     	
-    	skin.add("default",whiteFont);
-    	
-// Configure a TextButtonStyle and name it "default". Skin resources are stored by type, so this doesn't overwrite the font.
-        TextButtonStyle textButtonStyle = new TextButtonStyle();
-//        textButtonStyle.up = skin.newDrawable("white", Color.DARK_GRAY);
-//        textButtonStyle.down = skin.newDrawable("white", Color.DARK_GRAY);
-        textButtonStyle.up = skin.getDrawable("Button_up");
-        textButtonStyle.down = skin.getDrawable("Button_dn");
-        
-//        textButtonStyle.checked = skin.newDrawable("white", Color.BLUE);
-//        textButtonStyle.over = skin.newDrawable("white", Color.LIGHT_GRAY);
- 
-        textButtonStyle.font = skin.getFont("default");    	
+//    	whiteFont.setColor(Color.RED);
+	
+ //   	skin.add("default",whiteFont);
 
-        LabelStyle ls = new LabelStyle();
-        ls.font = whiteFont;
+    	LabelStyle ls = new LabelStyle();
+//        ls.font = whiteFont;
+        ls.font = bmpfont;
         
-//        l = new Label("test\nTest",skin);
-        l = new Label("test\nTest",ls);
+        skin.getFont("cool").setScale(2f);
+        l = new Label("test\nTest",skin);
+//        l = new Label("test\nTest",ls);
         l.setPosition(getWidth() /2 - l.getWidth()/2, getHeight() /2 +l.getHeight());
-    	l.setColor(1,0,0,1);
+//    	l.setColor(1,0,0,1);
     	
 //        textButton=new TextButton("PLAY",skin);
-        tButton=new TextButton("PLAY",textButtonStyle);
-        eButton = new  TextButton("EXIT",textButtonStyle);
+        tButton=new TextButton("PLAY",skin);
+        eButton = new  TextButton("EXIT",skin);
+//        tButton=new TextButton("PLAY",textButtonStyle);
+//        eButton = new  TextButton("EXIT",textButtonStyle);
         tButton.pad(10);
         eButton.pad(10);
 //        textButton.setSize(150, 80);
@@ -120,7 +111,8 @@ public class MenuStage extends Stage {
 		// TODO Auto-generated method stub
 		Oxy.log.debug("Stage.Dispose");
 		super.dispose();
-		whiteFont.dispose();
+//		whiteFont.dispose();
+		bmpfont.dispose();
 		skin.dispose();
 		atlas.dispose();	
 	}

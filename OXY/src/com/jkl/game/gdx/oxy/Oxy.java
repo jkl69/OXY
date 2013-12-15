@@ -12,7 +12,7 @@ import com.badlogic.gdx.utils.Logger;
 import com.jkl.game.gdx.oxy.screens.OxyLevel;
 import com.jkl.game.gdx.oxy.screens.Splash;
 import com.jkl.game.gdx.oxy.stages.MenuStage;
-import com.jkl.game.gdx.oxy.test.Menue;
+import com.jkl.game.gdx.oxy.test.MenuTest;
 
 
 //public class Oxy implements ApplicationListener {
@@ -103,7 +103,6 @@ public class Oxy extends Game {
 				gamestatus.setShowmenu(false);
 				gamestatus.showplatform = gamestatus.platformrender;
 			} else {
-				menu.tButton.setColor(Color.BLUE);
 				menu.tButton.setDisabled(true);
 			}
 //			setScreen(oxylevel);

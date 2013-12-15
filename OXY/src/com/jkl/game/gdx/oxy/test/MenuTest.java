@@ -28,7 +28,7 @@ import com.jkl.game.gdx.oxy.screens.OxyLevel;
 import com.jkl.game.gdx.oxy.screens.Splash;
 import com.jkl.game.gdx.oxy.screens.SplashActor;
 
-public class Menue implements Screen {
+public class MenuTest implements Screen {
     Skin skin,skin2;
     Stage stage;
     SpriteBatch batch;
@@ -40,12 +40,12 @@ public class Menue implements Screen {
 	
 	Table table;
 	    
-    public Menue(Game g){
+    public MenuTest(Game g){
         create();
         this.g=g;
     }
  
-    public Menue(){
+    public MenuTest(){
         create();
     }
     

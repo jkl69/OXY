@@ -36,7 +36,7 @@ public class OxyLevel implements Screen {
 	private Sprite sprite;
 	private ShapeRenderer shape;
 	private BitmapFont font;
-	private float LevelTime = 50000f;
+	private float LevelTime = 50f;
 	private TiledMap map;
 //	public MapObjects targets;
 	
@@ -56,7 +56,7 @@ public class OxyLevel implements Screen {
 	public static int opentargets=0;
 	
 	private String getlevelfile() {
-		return String.format("map/OjXY%03d.tmx",Oxy.gamestatus.Gamelevel); 
+		return String.format("map/OXY%03d.tmx",Oxy.gamestatus.Gamelevel); 
 //		return "map/OXY00"+String.valueOf(Oxy.gamestatus.Gamelevel)+".tmx"; 
 	}
 
@@ -147,7 +147,10 @@ public class OxyLevel implements Screen {
 	}
 
 	private void renderStatus() {
-		
+		fontbatch.begin();
+//		font.draw(fontbatch, "FPS: "+Gdx.graphics.getFramesPerSecond(), 20, 25);
+		font.draw(fontbatch, "TimeLeft: "+(int) LevelTime, 20, 25);
+		fontbatch.end();	
 	}
 	
 	@Override
@@ -178,7 +181,7 @@ public class OxyLevel implements Screen {
 //			setLastError("LEVEL SOLVED");
 			LevelSolved= true;
 			Oxy.gamestatus.Gamelevel++;
-			Oxy.gamestatus.message ="LEVEL "+(Oxy.gamestatus.Gamelevel-1)+"is solved\nNEXT LEVEL "+Oxy.gamestatus.Gamelevel;
+			Oxy.gamestatus.message ="LEVEL "+(Oxy.gamestatus.Gamelevel-1)+" is solved\nNEXT LEVEL "+Oxy.gamestatus.Gamelevel;
 			Oxy.gamestatus.setShowmenu(true);
 			log.info("Level Solved: next is " +getlevelfile());
 //			loadLevel();
@@ -214,6 +217,7 @@ public class OxyLevel implements Screen {
 			world.dispose();
 		}
 		LevelSolved = false;
+		LevelTime = 50;
 	}
 	
 	public boolean loadLevel() {
